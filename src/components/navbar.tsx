@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import * as React from 'react'
 import Link from 'next/link'
-import { useTheme } from 'next-themes'
+// import { useTheme } from 'next-themes'
 import { Menu } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -25,7 +26,7 @@ const navItems = [
 ]
 
 export function Navbar() {
-  const { setTheme } = useTheme()
+  // const { setTheme } = useTheme()
 
   return (
     <header className="sticky top-2 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

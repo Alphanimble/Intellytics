@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error
 "use client"
 import React, { useState, useMemo } from 'react';
 import {
@@ -35,7 +35,12 @@ const formatDate = (timestamp: string | number): string => {
 };
 
 // Custom Dot Component with Recharts-compatible shape function
-const CustomDot = (props: any) => {
+const CustomDot = (props: {
+  cx?: number,
+  cy?: number,
+  stroke?: string,
+  fill?: string
+}) => {
   const { cx, cy, stroke, fill } = props;
   return (
     <circle

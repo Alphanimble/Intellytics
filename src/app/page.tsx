@@ -1,101 +1,136 @@
-import Image from "next/image";
+"use client"
+import React, { useState, useMemo } from 'react';
+import {
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  ComposedChart,
+  Scatter,
+  Line
+} from "recharts";
+import { Slider } from "@/components/ui/slider"
+import { Button } from "@/components/ui/button"
+import { Check } from "lucide-react"
+import originalData from '../../forecast.json';
 
-export default function Home() {
+// Format timestamp to readable date
+const formatDate = (timestamp) => {
+  const date = new Date(Number(timestamp));
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+};
+
+const CustomDot = (props) => {
+  const { cx, cy, stroke, fill } = props;
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <circle
+      cx={cx}
+      cy={cy}
+      r={2}  // Very small radius
+      stroke={stroke}
+      fill={fill}
+      strokeWidth={1}
+    />
+  );
+};
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+// Custom Tooltip Component
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-black border border-gray-700 p-4 rounded-lg shadow-lg">
+        <p className="font-bold text-gray-300">{`Date: ${label}`}</p>
+        {payload.map((entry, index) => (
+          <p
+            key={`item-${index}`}
+            className={`
+              ${entry.name === 'Actual Values' ? 'text-purple-600' : 'text-green-600'}
+            `}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {`${entry.name}: ${entry.value.toFixed(2)}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+export default function ScatterAndLineOfBestFitChart() {
+  const [tempRange, setTempRange] = useState([2000, 3000]);
+  const [confirmedRange, setConfirmedRange] = useState([2000, 3000]);
+
+  // Use useMemo to ensure consistent data sampling across server and client renders
+  const sampledData = useMemo(() => {
+    // Transform data to use formatted date based on confirmed range
+    return originalData.slice(confirmedRange[0], confirmedRange[1]).map(item => ({
+      ...item,
+      ds: formatDate(item.ds)
+    }));
+  }, [confirmedRange]);
+
+  const handleRangeConfirm = () => {
+    setConfirmedRange(tempRange);
+  };
+
+  return (
+    <div>
+      <h1 className="text-6xl font-bold m-8">Google stock data predictions by Prophet</h1>
+
+      <div className="mx-auto max-w-3xl mb-4 flex items-center space-x-4">
+        <div className="flex-grow">
+          <p className="text-sm text-gray-600 mb-2">
+            Adjust data range: {tempRange[0]} - {tempRange[1]}
+          </p>
+          <Slider
+            defaultValue={tempRange}
+            min={0}
+            max={originalData.length}
+            step={1}
+            onValueChange={setTempRange}
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleRangeConfirm}
+          className="mt-4"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <Check className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <div className="flex justify-center">
+        <ResponsiveContainer width="80%" height={600}>
+          <ComposedChart data={sampledData}>
+            <CartesianGrid />
+            <XAxis dataKey="ds" />
+            <YAxis />
+            <Tooltip content={<CustomTooltip />} />
+
+            {/* Scatter plot of actual values with smaller dots */}
+            <Scatter
+              name="Actual Values"
+              dataKey="y"
+              stroke="#8884d8"
+              shape={CustomDot}
+            />
+
+            {/* Line of best fit */}
+            <Line
+              name="Predicted Line"
+              dataKey="yhat1"
+              stroke="#88ca9d"
+              dot={false}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

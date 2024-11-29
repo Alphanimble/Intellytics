@@ -1,4 +1,3 @@
-// @ts-expect-error
 "use client"
 import React, { useState, useMemo } from 'react';
 import {

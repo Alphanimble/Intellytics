@@ -8,15 +8,23 @@ import {
   ResponsiveContainer,
   ComposedChart,
   Scatter,
-  Line
+  Line,
+  TooltipProps
 } from "recharts";
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Check } from "lucide-react"
 import originalData from '../../forecast.json';
 
+// Define the type for the original data points
+interface DataPoint {
+  ds: string | number;  // timestamp
+  y: number;            // actual value
+  yhat1: number;        // predicted value
+}
+
 // Format timestamp to readable date
-const formatDate = (timestamp) => {
+const formatDate = (timestamp: string | number): string => {
   const date = new Date(Number(timestamp));
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -25,7 +33,8 @@ const formatDate = (timestamp) => {
   });
 };
 
-const CustomDot = (props) => {
+// Custom Dot Component with Recharts-compatible shape function
+const CustomDot = (props: any) => {
   const { cx, cy, stroke, fill } = props;
   return (
     <circle
@@ -39,8 +48,8 @@ const CustomDot = (props) => {
   );
 };
 
-// Custom Tooltip Component
-const CustomTooltip = ({ active, payload, label }) => {
+// Custom Tooltip Component with correct typing and null checks
+const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-black border border-gray-700 p-4 rounded-lg shadow-lg">
@@ -52,7 +61,7 @@ const CustomTooltip = ({ active, payload, label }) => {
               ${entry.name === 'Actual Values' ? 'text-purple-600' : 'text-green-600'}
             `}
           >
-            {`${entry.name}: ${entry.value.toFixed(2)}`}
+            {`${entry.name}: ${entry.value !== undefined ? entry.value.toFixed(2) : 'N/A'}`}
           </p>
         ))}
       </div>
@@ -62,11 +71,11 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function ScatterAndLineOfBestFitChart() {
-  const [tempRange, setTempRange] = useState([2000, 3000]);
-  const [confirmedRange, setConfirmedRange] = useState([2000, 3000]);
+  const [tempRange, setTempRange] = useState<[number, number]>([2000, 3000]);
+  const [confirmedRange, setConfirmedRange] = useState<[number, number]>([2000, 3000]);
 
   // Use useMemo to ensure consistent data sampling across server and client renders
-  const sampledData = useMemo(() => {
+  const sampledData = useMemo<DataPoint[]>(() => {
     // Transform data to use formatted date based on confirmed range
     return originalData.slice(confirmedRange[0], confirmedRange[1]).map(item => ({
       ...item,
@@ -81,7 +90,6 @@ export default function ScatterAndLineOfBestFitChart() {
   return (
     <div>
       <h1 className="text-6xl font-bold m-8">Google stock data predictions by Prophet</h1>
-
       <div className="mx-auto max-w-3xl mb-4 flex items-center space-x-4">
         <div className="flex-grow">
           <p className="text-sm text-gray-600 mb-2">
@@ -92,7 +100,7 @@ export default function ScatterAndLineOfBestFitChart() {
             min={0}
             max={originalData.length}
             step={1}
-            onValueChange={setTempRange}
+            onValueChange={(value: [number, number]) => setTempRange(value)}
           />
         </div>
         <Button
@@ -104,7 +112,6 @@ export default function ScatterAndLineOfBestFitChart() {
           <Check className="h-4 w-4" />
         </Button>
       </div>
-
       <div className="flex justify-center">
         <ResponsiveContainer width="80%" height={600}>
           <ComposedChart data={sampledData}>
@@ -112,7 +119,6 @@ export default function ScatterAndLineOfBestFitChart() {
             <XAxis dataKey="ds" />
             <YAxis />
             <Tooltip content={<CustomTooltip />} />
-
             {/* Scatter plot of actual values with smaller dots */}
             <Scatter
               name="Actual Values"
@@ -120,7 +126,6 @@ export default function ScatterAndLineOfBestFitChart() {
               stroke="#8884d8"
               shape={CustomDot}
             />
-
             {/* Line of best fit */}
             <Line
               name="Predicted Line"

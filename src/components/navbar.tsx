@@ -1,29 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-'use client'
+"use client";
 
-import * as React from 'react'
-import Link from 'next/link'
+import * as React from "react";
+import Link from "next/link";
 // import { useTheme } from 'next-themes'
-import { Menu } from 'lucide-react'
+import { Menu } from "lucide-react";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 // import {
 //   DropdownMenu,
 //   DropdownMenuContent,
 //   DropdownMenuItem,
 //   DropdownMenuTrigger,
 // } from '@/components/ui/dropdown-menu'
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import InputDemo from "./ui/search";
 
 const navItems = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-]
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+  { href: "/data", label: "Data" },
+  { href: "/charts", label: "Charts" },
+];
 
 export function Navbar() {
   // const { setTheme } = useTheme()
@@ -37,7 +36,7 @@ export function Navbar() {
               Intellytics
             </span>
           </Link>
-          <nav className="ml-6 flex items-center justify-center space-x-6 text-xl font-medium h-16">
+          <nav className="ml-48 flex items-center justify-center space-x-6 text-xl font-medium h-16">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -48,10 +47,16 @@ export function Navbar() {
               </Link>
             ))}
           </nav>
+          <div className="my-auto ml-48">
+            <InputDemo />
+          </div>
         </div>
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden">
+            <Button
+              variant="ghost"
+              className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+            >
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle Menu</span>
             </Button>
@@ -61,12 +66,11 @@ export function Navbar() {
           </SheetContent>
         </Sheet>
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-          </div>
+          <div className="w-full flex-1 md:w-auto md:flex-none"></div>
         </div>
       </div>
     </header>
-  )
+  );
 }
 
 function MobileNav() {
@@ -82,7 +86,7 @@ function MobileNav() {
         </Link>
       ))}
     </nav>
-  )
+  );
 }
 
 // function ThemeToggle() {
@@ -111,4 +115,3 @@ function MobileNav() {
 //     </DropdownMenu>
 //   )
 // }
-

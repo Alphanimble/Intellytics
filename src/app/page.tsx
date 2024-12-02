@@ -1,5 +1,5 @@
-"use client"
-import React, { useState, useMemo } from 'react';
+"use client";
+import React, { useState, useMemo } from "react";
 import {
   CartesianGrid,
   XAxis,
@@ -9,43 +9,44 @@ import {
   ComposedChart,
   Scatter,
   Line,
-  TooltipProps
+  TooltipProps,
 } from "recharts";
-import { Slider } from "@/components/ui/slider"
-import { Button } from "@/components/ui/button"
-import { Check } from "lucide-react"
-import originalData from '../../forecast.json';
+import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
+import originalData from "../../forecast.json";
+import InputDemo from "@/components/ui/search";
 
 // Define the type for the original data points
 interface DataPoint {
-  ds: string | number;  // timestamp
-  y: number;            // actual value
-  yhat1: number;        // predicted value
+  ds: string | number; // timestamp
+  y: number; // actual value
+  yhat1: number; // predicted value
 }
 
 // Format timestamp to readable date
 const formatDate = (timestamp: string | number): string => {
   const date = new Date(Number(timestamp));
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
   });
 };
 
 // Custom Dot Component with Recharts-compatible shape function
 const CustomDot = (props: {
-  cx?: number,
-  cy?: number,
-  stroke?: string,
-  fill?: string
+  cx?: number;
+  cy?: number;
+  stroke?: string;
+  fill?: string;
 }) => {
   const { cx, cy, stroke, fill } = props;
   return (
     <circle
       cx={cx}
       cy={cy}
-      r={2}  // Very small radius
+      r={2} // Very small radius
       stroke={stroke}
       fill={fill}
       strokeWidth={1}
@@ -54,7 +55,11 @@ const CustomDot = (props: {
 };
 
 // Custom Tooltip Component with correct typing and null checks
-const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload, label }) => {
+const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
+  active,
+  payload,
+  label,
+}) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-black border border-gray-700 p-4 rounded-lg shadow-lg">
@@ -63,10 +68,16 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
           <p
             key={`item-${index}`}
             className={`
-              ${entry.name === 'Actual Values' ? 'text-purple-600' : 'text-green-600'}
+              ${
+                entry.name === "Actual Values"
+                  ? "text-purple-600"
+                  : "text-green-600"
+              }
             `}
           >
-            {`${entry.name}: ${entry.value !== undefined ? entry.value.toFixed(2) : 'N/A'}`}
+            {`${entry.name}: ${
+              entry.value !== undefined ? entry.value.toFixed(2) : "N/A"
+            }`}
           </p>
         ))}
       </div>
@@ -77,15 +88,19 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
 
 export default function ScatterAndLineOfBestFitChart() {
   const [tempRange, setTempRange] = useState<[number, number]>([2000, 3000]);
-  const [confirmedRange, setConfirmedRange] = useState<[number, number]>([2000, 3000]);
+  const [confirmedRange, setConfirmedRange] = useState<[number, number]>([
+    2000, 3000,
+  ]);
 
   // Use useMemo to ensure consistent data sampling across server and client renders
   const sampledData = useMemo<DataPoint[]>(() => {
     // Transform data to use formatted date based on confirmed range
-    return originalData.slice(confirmedRange[0], confirmedRange[1]).map(item => ({
-      ...item,
-      ds: formatDate(item.ds)
-    }));
+    return originalData
+      .slice(confirmedRange[0], confirmedRange[1])
+      .map((item) => ({
+        ...item,
+        ds: formatDate(item.ds),
+      }));
   }, [confirmedRange]);
 
   const handleRangeConfirm = () => {
@@ -94,7 +109,9 @@ export default function ScatterAndLineOfBestFitChart() {
 
   return (
     <div>
-      <h1 className="text-6xl font-bold m-8">Google stock data predictions by Prophet</h1>
+      <h1 className="text-6xl font-bold m-8">
+        Google stock data predictions by Prophet
+      </h1>
       <div className="mx-auto max-w-3xl mb-4 flex items-center space-x-4">
         <div className="flex-grow">
           <p className="text-sm text-gray-600 mb-2">
@@ -102,7 +119,7 @@ export default function ScatterAndLineOfBestFitChart() {
           </p>
           <Slider
             defaultValue={tempRange}
-            min={0}
+            min={2000}
             max={originalData.length}
             step={1}
             onValueChange={(value: [number, number]) => setTempRange(value)}

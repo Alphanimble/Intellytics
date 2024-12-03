@@ -46,10 +46,10 @@ const CustomDot = (props: {
     <circle
       cx={cx}
       cy={cy}
-      r={2} // Very small radius
+      r={4} // Very small radius
       stroke={stroke}
       fill={fill}
-      strokeWidth={1}
+      strokeWidth={2}
     />
   );
 };
@@ -68,16 +68,14 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
           <p
             key={`item-${index}`}
             className={`
-              ${
-                entry.name === "Actual Values"
-                  ? "text-purple-600"
-                  : "text-green-600"
+              ${entry.name === "Actual Values in Cr"
+                ? "text-purple-600"
+                : "text-green-600"
               }
             `}
           >
-            {`${entry.name}: ${
-              entry.value !== undefined ? entry.value.toFixed(2) : "N/A"
-            }`}
+            {`${entry.name}: ${entry.value !== undefined ? entry.value.toFixed(2) : "N/A"
+              }`}
           </p>
         ))}
       </div>
@@ -87,9 +85,9 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
 };
 
 export default function ScatterAndLineOfBestFitChart() {
-  const [tempRange, setTempRange] = useState<[number, number]>([2000, 3000]);
+  const [tempRange, setTempRange] = useState<[number, number]>([0, 50]);
   const [confirmedRange, setConfirmedRange] = useState<[number, number]>([
-    2000, 3000,
+    0, 50,
   ]);
 
   // Use useMemo to ensure consistent data sampling across server and client renders
@@ -110,7 +108,7 @@ export default function ScatterAndLineOfBestFitChart() {
   return (
     <div>
       <h1 className="text-6xl font-bold m-8">
-        Google stock data predictions by Prophet
+        Lenskart stock data predictions by Prophet
       </h1>
       <div className="mx-auto max-w-3xl mb-4 flex items-center space-x-4">
         <div className="flex-grow">
@@ -119,7 +117,7 @@ export default function ScatterAndLineOfBestFitChart() {
           </p>
           <Slider
             defaultValue={tempRange}
-            min={2000}
+            min={0}
             max={originalData.length}
             step={1}
             onValueChange={(value: [number, number]) => setTempRange(value)}

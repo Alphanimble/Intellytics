@@ -112,6 +112,7 @@ function MetricChart({
 }: {
   title: string;
   description: string;
+
   data: any[];
 }) {
   return (

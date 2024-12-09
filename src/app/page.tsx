@@ -15,7 +15,6 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import originalData from "../../forecast.json";
-import InputDemo from "@/components/ui/search";
 
 // Define the type for the original data points
 interface DataPoint {

@@ -30,13 +30,13 @@ export function Navbar() {
   return (
     <header className="sticky top-2 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
-        <div className="ml-6 hidden md:flex">
-          <Link href="/" className=" flex items-center space-x-2">
+        <div className="ml-6 hidden md:flex w-full justify-between">
+          <Link href="/" className="flex items-center space-x-2">
             <span className="hidden font-bold text-6xl text-sky-500 sm:inline-block">
               Intellytics
             </span>
           </Link>
-          <nav className="ml-48 flex items-center justify-center space-x-6 text-xl font-medium h-16">
+          <nav className="flex items-center justify-center space-x-6 text-xl font-medium h-16">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -47,7 +47,7 @@ export function Navbar() {
               </Link>
             ))}
           </nav>
-          <div className="my-auto ml-48">
+          <div className="flex items-center">
             <InputDemo />
           </div>
         </div>

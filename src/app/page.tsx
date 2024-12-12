@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useMemo } from "react";
 import {
   CartesianGrid,
@@ -14,7 +15,17 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import originalData from "../../forecast.json";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import originalData from "../../public/predictions/lenskart_predictions.json";
+import fibe from "../../public/predictions/fibe_predictions.json";
+import bizongo from "../../public/predictions/bazingo_predictions.json";
+import Pixis from "../../public/predictions/pixis_predictions.json";
 
 // Define the type for the original data points
 interface DataPoint {
@@ -67,14 +78,16 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
           <p
             key={`item-${index}`}
             className={`
-              ${entry.name === "Actual Values in Cr"
-                ? "text-purple-600"
-                : "text-green-600"
+              ${
+                entry.name === "Actual Values in Cr"
+                  ? "text-purple-600"
+                  : "text-green-600"
               }
             `}
           >
-            {`${entry.name}: ${entry.value !== undefined ? entry.value.toFixed(2) : "N/A"
-              }`}
+            {`${entry.name}: ${
+              entry.value !== undefined ? entry.value.toFixed(2) : "N/A"
+            }`}
           </p>
         ))}
       </div>
@@ -88,27 +101,64 @@ export default function ScatterAndLineOfBestFitChart() {
   const [confirmedRange, setConfirmedRange] = useState<[number, number]>([
     0, 50,
   ]);
+  const [selectedCompany, setSelectedCompany] = useState("lenskart");
+
+  // Simulated data for different companies
+  const companiesData = {
+    lenskart: originalData,
+    fibe: fibe,
+    bizongo: bizongo,
+    pixis: Pixis,
+  };
 
   // Use useMemo to ensure consistent data sampling across server and client renders
   const sampledData = useMemo<DataPoint[]>(() => {
-    // Transform data to use formatted date based on confirmed range
-    return originalData
+    const selectedData =
+      companiesData[selectedCompany as keyof typeof companiesData];
+    if (!Array.isArray(selectedData)) {
+      console.error(`Data for ${selectedCompany} is not an array`);
+      return [];
+    }
+    return selectedData
       .slice(confirmedRange[0], confirmedRange[1])
       .map((item) => ({
         ...item,
         ds: formatDate(item.ds),
       }));
-  }, [confirmedRange]);
+  }, [confirmedRange, selectedCompany]);
 
   const handleRangeConfirm = () => {
     setConfirmedRange(tempRange);
   };
 
+  const handleCompanyChange = (value: string) => {
+    setSelectedCompany(value as keyof typeof companiesData);
+    // Reset the range when changing companies
+    const newMax = Array.isArray(
+      companiesData[value as keyof typeof companiesData]
+    )
+      ? companiesData[value as keyof typeof companiesData].length - 1
+      : 50;
+    setTempRange([0, Math.min(50, newMax)]);
+    setConfirmedRange([0, Math.min(50, newMax)]);
+  };
+
   return (
     <div>
-      <h1 className="text-6xl font-bold m-8">
-        Lenskart stock data predictions by Prophet
-      </h1>
+      <div className="flex justify-between items-center m-8">
+        <h1 className="text-6xl font-bold">Revenue Predictions by Prophet</h1>
+        <Select onValueChange={handleCompanyChange} defaultValue="lenskart">
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select company" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="lenskart">Lenskart</SelectItem>
+            <SelectItem value="fibe">Fibe</SelectItem>
+            <SelectItem value="bizongo">Bizongo</SelectItem>
+            <SelectItem value="pixis">Pixis</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <div className="mx-auto max-w-3xl mb-4 flex items-center space-x-4">
         <div className="flex-grow">
           <p className="text-sm text-gray-600 mb-2">
@@ -117,7 +167,14 @@ export default function ScatterAndLineOfBestFitChart() {
           <Slider
             defaultValue={tempRange}
             min={0}
-            max={originalData.length}
+            max={
+              Array.isArray(
+                companiesData[selectedCompany as keyof typeof companiesData]
+              )
+                ? companiesData[selectedCompany as keyof typeof companiesData]
+                    .length - 1
+                : 50
+            }
             step={1}
             onValueChange={(value: [number, number]) => setTempRange(value)}
           />

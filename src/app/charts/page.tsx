@@ -13,30 +13,24 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-import data from "../../../public/data/bazingo.json";
-console.log(data[0].compareMetrics[0]);
+import bizongo from "../../../public/charts/bizongo.json";
+import fibe from "../../../public/charts/fibe.json";
+import lenscart from "../../../public/charts/lenscart.json";
+import Pixis from "../../../public/charts/Pixis.json";
 
-const chartConfig = {
-  fundI: {
-    label: "Fund I",
-    color: "hsl(var(--chart-1))",
-  },
-  fundII: {
-    label: "Fund II",
-    color: "hsl(var(--chart-2))",
-  },
-  fundIII: {
-    label: "Fund III",
-    color: "hsl(var(--chart-3))",
-  },
-  fundIV: {
-    label: "Fund IV",
-    color: "hsl(var(--chart-4))",
-  },
-};
+import { useState } from "react";
 
-function processData(metricIndex) {
+console.log(bizongo[0].compareMetrics[0]);
+
+function processData(metricIndex: number, data: any[]) {
   const metricData = data[0].compareMetrics[metricIndex];
   return Object.entries(metricData)
     .filter(([key, value]) => key.includes("_") && !isNaN(value))
@@ -53,10 +47,12 @@ function MetricChart({
   title,
   description,
   data,
+  color,
 }: {
   title: string;
   description: string;
   data: any[];
+  color: string;
 }) {
   return (
     <Card className="w-full">
@@ -87,7 +83,7 @@ function MetricChart({
             <Line
               type="monotone"
               dataKey="value"
-              stroke="hsl(var(--chart-1))"
+              stroke={color || "hsl(var(--chart-1))"}
               strokeWidth={2}
               dot={{ r: 4 }}
               connectNulls
@@ -100,29 +96,67 @@ function MetricChart({
 }
 
 export default function FundMetricsDashboard() {
+  const [company, setCompany] = useState(bizongo);
+
+  const handleCompanyChange = (value: string) => {
+    switch (value) {
+      case "bizongo":
+        setCompany(bizongo);
+        break;
+      case "fibe":
+        setCompany(fibe);
+        break;
+      case "lenscart":
+        setCompany(lenscart);
+        break;
+      case "pixis":
+        setCompany(Pixis);
+        break;
+      default:
+        setCompany(bizongo);
+    }
+  };
+
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Fund Performance Metrics</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Fund Performance Metrics</h1>
+        <Select onValueChange={handleCompanyChange} defaultValue="bizongo">
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select company" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="bizongo">Bizongo</SelectItem>
+            <SelectItem value="fibe">Fibe</SelectItem>
+            <SelectItem value="lenscart">Lenscart</SelectItem>
+            <SelectItem value="pixis">Pixis</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <MetricChart
           title="Gross Revenue"
           description="Quarterly Gross Revenue"
-          data={processData(0)}
+          data={processData(0, company)}
+          color="hsl(var(--chart-1))"
         />
         <MetricChart
           title="Net Revenue"
           description="Quarterly Net Revenue"
-          data={processData(1)}
+          data={processData(1, company)}
+          color="hsl(var(--chart-2))"
         />
         <MetricChart
           title="Direct Cost"
           description="Quarterly Direct Cost"
-          data={processData(2)}
+          data={processData(2, company)}
+          color="hsl(var(--chart-3))"
         />
         <MetricChart
           title="Gross Margin"
           description="Quarterly Gross Margin"
-          data={processData(3)}
+          data={processData(3, company)}
+          color="hsl(var(--chart-4))"
         />
       </div>
     </div>

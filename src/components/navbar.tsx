@@ -22,6 +22,7 @@ const navItems = [
   { href: "/contact", label: "Contact" },
   { href: "/data", label: "Data" },
   { href: "/charts", label: "Charts" },
+  { href: "/analysis", label: "Analysis" },
 ];
 
 export function Navbar() {

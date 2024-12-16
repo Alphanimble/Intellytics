@@ -54,6 +54,8 @@ function MetricChart({
   data: any[];
   color: string;
 }) {
+  const formatToMillions = (value: number) => `${value / 1_000_000}M`;
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -78,7 +80,12 @@ function MetricChart({
               axisLine={false}
               tickMargin={8}
             />
-            <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={formatToMillions} // Format Y-axis values to millions
+            />
             <ChartTooltip content={<ChartTooltipContent />} />
             <Line
               type="monotone"

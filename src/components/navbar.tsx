@@ -18,21 +18,19 @@ import InputDemo from "./ui/search";
 
 const navItems = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
   { href: "/data", label: "Data" },
   { href: "/charts", label: "Charts" },
-  { href: "/analysis", label: "Analysis" },
+  { href: "/analytics", label: "Analytics" },
 ];
 
 export function Navbar() {
   // const { setTheme } = useTheme()
 
   return (
-    <header className="sticky top-2 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-4">
       <div className="container flex h-16 items-center">
         <div className="ml-6 hidden md:flex w-full justify-between">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/data" className="flex items-center space-x-2">
             <span className="hidden font-bold text-6xl text-sky-500 sm:inline-block">
               Intellytics
             </span>

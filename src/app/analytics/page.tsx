@@ -12,6 +12,9 @@ import {
   Line,
   TooltipProps,
 } from "recharts";
+import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -142,54 +145,72 @@ export default function ScatterAndLineOfBestFitChart() {
 
   return (
     <div>
-      <div className="flex flex-col items-center justify-center m-4">
-        {/* Chart Section */}
-        <div className="w-full flex justify-center">
-          <ResponsiveContainer width="80%" height={600}>
-            <ComposedChart data={sampledData}>
-              <CartesianGrid />
-              <XAxis dataKey="ds" />
-              <YAxis />
-              <Tooltip content={<CustomTooltip />} />
-              {/* Scatter plot of actual values with smaller dots */}
-              <Scatter
-                name="Actual Values"
-                dataKey="y"
-                stroke="#8884d8"
-                shape={CustomDot}
-              />
-              {/* Line of best fit */}
-              <Line
-                name="Predicted Line"
-                dataKey="yhat1"
-                stroke="#88ca9d"
-                dot={false}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
+      <div className="flex justify-between items-center m-8">
+        <h1 className="text-6xl font-bold">Revenue Predictions by Prophet</h1>
+        <Select onValueChange={handleCompanyChange} defaultValue="lenskart">
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select company" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="lenskart">Lenskart</SelectItem>
+            <SelectItem value="fibe">Fibe</SelectItem>
+            <SelectItem value="bizongo">Bizongo</SelectItem>
+            <SelectItem value="pixis">Pixis</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="mx-auto max-w-3xl mb-4 flex items-center space-x-4">
+        <div className="flex-grow">
+          <p className="text-sm text-gray-600 mb-2">
+            Adjust data range: {tempRange[0]} - {tempRange[1]}
+          </p>
+          <Slider
+            defaultValue={tempRange}
+            min={0}
+            max={
+              Array.isArray(
+                companiesData[selectedCompany as keyof typeof companiesData]
+              )
+                ? companiesData[selectedCompany as keyof typeof companiesData]
+                    .length - 1
+                : 50
+            }
+            step={1}
+            onValueChange={(value: [number, number]) => setTempRange(value)}
+          />
         </div>
-        {/* Dropdown Section */}
-        <div className="">
-          <Select onValueChange={handleCompanyChange} defaultValue="lenskart">
-            <SelectTrigger className="w-auto p-2 m-4">
-              <SelectValue placeholder="Select company" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="lenskart">
-                India Fund IV (INR millions)
-              </SelectItem>
-              <SelectItem value="fibe">Intl.Fund IV (USD millions)</SelectItem>
-              <SelectItem value="bizongo">
-                Pandara Trust (INR millions)
-              </SelectItem>
-              <SelectItem value="pixis">
-                Chiratae Trust (INR millions)
-              </SelectItem>
-              <SelectItem value="pixis">Fund III (USD millions)</SelectItem>
-              <SelectItem value="pixis">TVF (INR millions)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleRangeConfirm}
+          className="mt-4"
+        >
+          <Check className="h-4 w-4" />
+        </Button>
+      </div>
+      <div className="flex justify-center">
+        <ResponsiveContainer width="80%" height={600}>
+          <ComposedChart data={sampledData}>
+            <CartesianGrid />
+            <XAxis dataKey="ds" />
+            <YAxis />
+            <Tooltip content={<CustomTooltip />} />
+            {/* Scatter plot of actual values with smaller dots */}
+            <Scatter
+              name="Actual Values"
+              dataKey="y"
+              stroke="#8884d8"
+              shape={CustomDot}
+            />
+            {/* Line of best fit */}
+            <Line
+              name="Predicted Line"
+              dataKey="yhat1"
+              stroke="#88ca9d"
+              dot={false}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

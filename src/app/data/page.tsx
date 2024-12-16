@@ -1,13 +1,15 @@
-import { getTableList } from "@/components/table-list";
-import DynamicTables from "@/components/dynamic-table";
+import FundPerformanceTable from "@/components/custom/FundPerformanceTable";
+import { FundsData } from "@/types/fund";
+import data from "../../../public/quantium_fund_data.json";
+
+// In a real application, you would fetch this data from an API
+const fundsData: FundsData = data;
 
 export default function Home() {
-  const tables = getTableList();
-
   return (
-    <main className="container mx-auto p-6  min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">Dynamic Tables Viewer</h1>
-      <DynamicTables tables={tables} />
+    <main className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Fund Performance</h1>
+      <FundPerformanceTable fundsData={fundsData} />
     </main>
   );
 }

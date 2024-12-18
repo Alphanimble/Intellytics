@@ -27,10 +27,10 @@ export function Navbar() {
   // const { setTheme } = useTheme()
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-4">
-      <div className="container flex h-16 items-center">
+    <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-4">
+      <div className="flex h-12 items-center ">
         <div className="ml-6 hidden md:flex w-full justify-between">
-          <Link href="/data" className="flex items-center space-x-2">
+          <Link href="/data" className="flex items-center space-x-2 ml-16">
             <span className="hidden font-bold text-6xl text-sky-500 sm:inline-block">
               Intellytics
             </span>
@@ -46,7 +46,7 @@ export function Navbar() {
               </Link>
             ))}
           </nav>
-          <div className="flex items-center">
+          <div className="flex items-end justify-end p-4">
             <InputDemo />
           </div>
         </div>

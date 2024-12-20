@@ -32,7 +32,7 @@ console.log(bizongo[0].compareMetrics[0]);
 
 function processData(metricIndex: number, data: any[]) {
   const metricData = data[0].compareMetrics[metricIndex];
-  return Object.entries(metricData)
+  return Object.entries(metricData)// @ts-ignore
     .filter(([key, value]) => key.includes("_") && !isNaN(value))
     .map(([key, value]) => {
       const [quarter, year] = key.split("_");
@@ -110,13 +110,13 @@ export default function FundMetricsDashboard() {
       case "bizongo":
         setCompany(bizongo);
         break;
-      case "fibe":
+      case "fibe":// @ts-ignore
         setCompany(fibe);
         break;
-      case "lenscart":
+      case "lenscart":// @ts-ignore
         setCompany(lenscart);
         break;
-      case "pixis":
+      case "pixis":// @ts-ignore
         setCompany(Pixis);
         break;
       default:

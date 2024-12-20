@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/chart";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { FundsData } from "../types/fund";
 
 export default function FundPerformanceTable({

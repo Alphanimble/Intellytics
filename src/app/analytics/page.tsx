@@ -44,6 +44,7 @@ const formatDate = (timestamp: string | number): string => {
   });
 };
 
+const formatToMillions = (value: number) => `${value / 1_000_000}M`;
 // Custom Dot Component with Recharts-compatible shape function
 const CustomDot = (props: {
   cx?: number;
@@ -78,16 +79,14 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
           <p
             key={`item-${index}`}
             className={`
-              ${
-                entry.name === "Actual Values in Cr"
-                  ? "text-purple-600"
-                  : "text-green-600"
+              ${entry.name === "Actual Values in Cr"
+                ? "text-purple-600"
+                : "text-green-600"
               }
             `}
           >
-            {`${entry.name}: ${
-              entry.value !== undefined ? entry.value.toFixed(2) : "N/A"
-            }`}
+            {`${entry.name}: ${entry.value !== undefined ? entry.value.toFixed(2) : "N/A"
+              }`}
           </p>
         ))}
       </div>
@@ -172,7 +171,7 @@ export default function ScatterAndLineOfBestFitChart() {
                 companiesData[selectedCompany as keyof typeof companiesData]
               )
                 ? companiesData[selectedCompany as keyof typeof companiesData]
-                    .length - 1
+                  .length - 1
                 : 50
             }
             step={1}
@@ -193,7 +192,10 @@ export default function ScatterAndLineOfBestFitChart() {
           <ComposedChart data={sampledData}>
             <CartesianGrid />
             <XAxis dataKey="ds" />
-            <YAxis />
+            <YAxis
+
+              tickFormatter={formatToMillions} // Format Y-axis values to millions
+            />
             <Tooltip content={<CustomTooltip />} />
             {/* Scatter plot of actual values with smaller dots */}
             <Scatter
@@ -207,6 +209,7 @@ export default function ScatterAndLineOfBestFitChart() {
               name="Predicted Line"
               dataKey="yhat1"
               stroke="#88ca9d"
+              strokeWidth={2}
               dot={false}
             />
           </ComposedChart>

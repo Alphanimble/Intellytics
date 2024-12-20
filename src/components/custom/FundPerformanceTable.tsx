@@ -50,7 +50,8 @@ export default function FundPerformanceTable({
 
   const chartData = useMemo(() => {
     return Object.entries(tableData).map(([date, values]) => ({
-      date,// @ts-ignore
+      date,
+      // @ts-expect-error
       [selectedMetric]: parseFloat(values[selectedMetric as keyof typeof values] as string) || 0,
     }));
   }, [tableData, selectedMetric]);
@@ -63,7 +64,7 @@ export default function FundPerformanceTable({
             <SelectValue placeholder="Select Fund" />
           </SelectTrigger>
           <SelectContent>
-// @ts-ignore
+
             {fundsData.funds.map((fund: any, index: number) => (
               <SelectItem key={index} value={index.toString()}>
                 {fund.name}
@@ -154,7 +155,7 @@ export default function FundPerformanceTable({
                   <TableCell className="font-medium">{date}</TableCell>
                   {columns.map((column) => (
                     <TableCell key={column}>
-                        // @ts-ignore
+
                       {values[column as keyof typeof values]}
                     </TableCell>
                   ))}

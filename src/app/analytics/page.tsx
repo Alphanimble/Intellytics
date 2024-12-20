@@ -111,7 +111,7 @@ export default function ScatterAndLineOfBestFitChart() {
   };
 
   // Use useMemo to ensure consistent data sampling across server and client renders
-  // @ts-ignore
+  // @ts-expect-error
   const sampledData = useMemo<DataPoint[]>(() => {
     const selectedData =
       companiesData[selectedCompany as keyof typeof companiesData];

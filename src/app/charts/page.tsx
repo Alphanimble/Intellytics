@@ -110,13 +110,13 @@ export default function FundMetricsDashboard() {
       case "bizongo":
         setCompany(bizongo);
         break;
-      case "fibe":// @ts-expect-error
+      case "fibe":
         setCompany(fibe);
         break;
-      case "lenscart":// @ts-expect-error
+      case "lenscart":
         setCompany(lenscart);
         break;
-      case "pixis":// @ts-expect-error
+      case "pixis":
         setCompany(Pixis);
         break;
       default:

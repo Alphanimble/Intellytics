@@ -112,8 +112,6 @@ export default function ScatterAndLineOfBestFitChart() {
     pixis: Pixis,
   };
 
-  // Use useMemo to ensure consistent data sampling across server and client renders
-  // @ts-expect-error
   const sampledData = useMemo<DataPoint[]>(() => {
     const selectedData =
       companiesData[selectedCompany as keyof typeof companiesData];
@@ -190,13 +188,13 @@ export default function ScatterAndLineOfBestFitChart() {
           <Check className="h-4 w-4" />
         </Button>
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center ">
         <ResponsiveContainer width="80%" height={600}>
           <ComposedChart data={sampledData}>
             <CartesianGrid />
-            <XAxis dataKey="ds" />
+            <XAxis dataKey="ds" tick={{ fill: "white", textAnchor: "start", fontSize: "11px" }} />
             <YAxis
-
+              tick={{ fill: "white", textAnchor: "end", fontSize: "11px" }}
               tickFormatter={formatToMillions} // Format Y-axis values to millions
             />
             <Tooltip content={<CustomTooltip />} />

@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/chart";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';// @ts-ignore
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { FundsData } from "../types/fund";
 
 export default function FundPerformanceTable({
@@ -52,7 +52,6 @@ export default function FundPerformanceTable({
   const chartData = useMemo(() => {
     return Object.entries(tableData).map(([date, values]) => ({
       date,
-      // @ts-expect-error
       [selectedMetric]: parseFloat(values[selectedMetric as keyof typeof values] as string) || 0,
     }));
   }, [tableData, selectedMetric]);

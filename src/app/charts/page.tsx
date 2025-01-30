@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
@@ -32,7 +33,7 @@ console.log(bizongo[0].compareMetrics[0]);
 
 function processData(metricIndex: number, data: any[]) {
   const metricData = data[0].compareMetrics[metricIndex];
-  return Object.entries(metricData)// @ts-expect-error
+  return Object.entries(metricData)
     .filter(([key, value]) => key.includes("_") && !isNaN(value))
     .map(([key, value]) => {
       const [quarter, year] = key.split("_");
